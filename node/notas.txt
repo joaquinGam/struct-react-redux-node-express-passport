@@ -1,0 +1,62 @@
+//Import the mongoose module
+var mongoose = require('mongoose');
+
+//Set up default mongoose connection
+var mongoDB = 'mongodb://127.0.0.1/my_database';
+mongoose.connect(mongoDB, { useNewUrlParser: true });
+// Get Mongoose to use the global promise library
+mongoose.Promise = global.Promise;
+//Get the default connection
+var db = mongoose.connection;
+
+//Bind connection to error event (to get notification of connection errors)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+// field types
+var schema = new Schema(
+{
+  name: String,
+  binary: Buffer,
+  living: Boolean,
+  updated: { type: Date, default: Date.now() },
+  age: { type: Number, min: 18, max: 65, required: true },
+  mixed: Schema.Types.Mixed,
+  _someId: Schema.Types.ObjectId,
+  array: [],
+  ofString: [String], // You can also have an array of each of the other types too.
+  nested: { stuff: { type: String, lowercase: true, trim: true } }
+})
+
+//find ----------------------------------------------------------------------------------------
+var Athlete = mongoose.model('Athlete', yourSchema);
+
+// find all athletes who play tennis, selecting the 'name' and 'age' fields
+Athlete.find({ 'sport': 'Tennis' }, 'name age', function (err, athletes) {
+  if (err) return handleError(err);
+  // 'athletes' contains the list of athletes that match the criteria.
+})
+// OR
+Athlete.
+  find().
+  where('sport').equals('Tennis').
+  where('age').gt(17).lt(50).  //Additional where query
+  limit(5).
+  sort({ age: -1 }).
+  select('name age').
+  exec(callback); // where callback is the name of our callback function.
+
+var mongoose = require('mongoose')
+  , Schema = mongoose.Schema
+
+var authorSchema = Schema({
+  name    : String,
+  stories : [{ type: Schema.Types.ObjectId, ref: 'Story' }]
+});
+
+var storySchema = Schema({
+  author : { type: Schema.Types.ObjectId, ref: 'Author' },
+  title    : String
+});
+
+var Story  = mongoose.model('Story', storySchema);
+var Author = mongoose.model('Author', authorSchema);
