@@ -22,6 +22,21 @@ exports.create = (req, res, next) => {
     });
   }
 
+  //Check if user is registered
+  Users.findOne({ email: user.email }, function (err, user) {
+    if (err) {
+      res.status(500).json(err);
+    }
+    if (user) {
+      res.status(422).json({
+        errors: {
+          email: 'registered',
+        },
+      });
+    }
+  });
+
+  //User is not registered, create one
   const finalUser = new Users(user);
 
   finalUser.setPassword(user.password);
