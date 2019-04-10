@@ -28,7 +28,7 @@ module.exports = function (app) {
         }
         return next();
       }
-      if (~err.message.indexOf('not found') || (~err.message.indexOf('Cast to ObjectId failed'))) {
+      if (~err.message.indexOf('not found') || (~err.message.indexOf('Cast to ObjectId failed')) || req.error !== undefined) {
         return next();
       }
     }
