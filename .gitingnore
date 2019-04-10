@@ -1,0 +1,5 @@
+## database file
+./node/data/*
+./node/node_modules/*
+
+./yarn.lock
